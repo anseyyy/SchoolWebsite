@@ -1,42 +1,45 @@
-const UserModel = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const UserModel = require("../models/userModel")
+const bcrypt = require("bcrypt")
 
 exports.UserData = async (req, res) => {
   console.log("Inside UserData ");
-  const { name, email, password } = req.body
 
   try {
-    const existingUser = await Users.findOne({ email })
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User already exists. Please log in." })
-    }
+    const { name, email,  password } = req.body;
 
-    const newUser = new User({ email, password, name })
-    await newUser.save()
+    const newUser = await UserModel.create({
+      name,
+      email,
+      password
+    })
 
-    res.status(201).json({ message: "User registered successfully." })
+    res.status(201).json({ success: true, message: "User registered successfully", userType: newUser.userType });
   } catch (err) {
-    res.status(500).json({ message: "Server error", err })
+    console.error("Error creating user:", err.message);
+    res.status(500).json({ error: "Failed to create user" });
   }
-};
+
+
+}
+
 
 exports.loginUser = async (req, res) => {
-  console.log("Inside loginUser");
+  console.log("Inside loginUser")
 
   const { email, password } = req.body;
-  console.log({ email, password });
-
+  console.log({email,password});
+  
   const adminEmail = "admin@gmail.com"
-  const adminPassword = "admin123";
-  try {
-    if (email === adminEmail && password === adminPassword) {
-      res.status(200).json({ success: true });
-    } else {
-      res.status(406).json({ error: "Invalid credentials" });
-    }
-  } catch (err) {
-    res.status(400).json(err);
+  const adminPassword = "admin123"
+try{
+  if (email === adminEmail && password === adminPassword) {
+     res.status(200).json({ success: true })
+  } else {
+     res.status(406).json({ error: "Invalid credentials" })
   }
-};
+}
+catch(err){
+  res.status(400).json(err)
+
+}
+}
