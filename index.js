@@ -6,14 +6,9 @@ require("./dbConnection/dbConnection");
 const router = require("./routes/routes");
 
 const backend = express();
-const corsOptions = {
-  origin: ["http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
 
 backend.use(express.json());
-backend.use(cors(corsOptions));
+backend.use(cors());
 backend.use(router);
 
 const PORT = process.env.PORT || 3000;
